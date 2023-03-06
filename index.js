@@ -61,8 +61,11 @@ const askPrimaryQuest = async function (employeeType) {
 
 
 const managerInfo = async function () {
-    const manager = "manager"
-    const primaryAnswers = await askPrimaryQuest(manager);
+    const objectName = {
+        objectName : "Manager"
+    }
+    console.log(objectName.objectName)
+    const primaryAnswers = await askPrimaryQuest(objectName.objectName);
     const managerAnswers = await inquirer.prompt([
         {
         name: "officeNum",
@@ -70,27 +73,41 @@ const managerInfo = async function () {
         message: "Enter office number:",
         },
     ]);
-
-    return {...primaryAnswers, ...managerAnswers}
-
+    // returns two objects that been merged.
+    return {...objectName, ...primaryAnswers, ...managerAnswers}
 
 };
 
-const createObject = async function (answers) {
-    const managerObj = await new Manager(
-        answers.name,
-        answers.id,
-        answers.email,
-        answers.officeNum
+const createAnInstance = async function (answers) {
+    const objectTypes = [Manager, Engineer, Intern]
+
+    let objectType = answers.objectName
+    const primaryName = answers.name
+    const primaryId = answers.id
+    const primaryEmail = answers.email
+    let additionalInfo;
+    
+    if (objectType === "Manager") {
+        objectType = objectTypes[0]
+        additionalInfo = answers.officeNum
+    } 
+
+
+    const managerObj = await new objectType(
+        primaryName,
+        primaryId,
+        primaryEmail,
+        additionalInfo,
     );
+
     console.log(managerObj);
 }
 
 
 const initiateQuestions = async function() {
     const managersAnswers = await managerInfo()
-    createObject(managersAnswers)
-    console.log(managersAnswers);
+    createAnInstance(managersAnswers)
+    
 }
 
 initiateQuestions()
