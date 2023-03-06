@@ -9,8 +9,6 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./src/page-template.js");
 
-
-
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
 const Employee = require("./lib/Employee");
@@ -37,6 +35,9 @@ const { create } = require("domain");
 //     });
 // };
 
+
+
+
 const askPrimaryQuest = async function (employeeType) {
 
     console.log(`Enter ${employeeType}'s Details`)
@@ -59,12 +60,10 @@ const askPrimaryQuest = async function (employeeType) {
     ]);
 };
 
-
 const managerInfo = async function () {
     const objectName = {
         objectName : "Manager"
     }
-    console.log(objectName.objectName)
     const primaryAnswers = await askPrimaryQuest(objectName.objectName);
     const managerAnswers = await inquirer.prompt([
         {
@@ -78,39 +77,116 @@ const managerInfo = async function () {
 
 };
 
+const engineerInfo = async function () {
+    const objectName = {
+        objectName : "Engineer"
+    }
+    const primaryAnswers = await askPrimaryQuest(objectName.objectName);
+    const engineerAnswers = await inquirer.prompt([
+        {
+        name: "gitHub",
+        type: "input",
+        message: "Enter GitHub Account:",
+        },
+    ]);
+    // returns two objects that been merged.
+    return {...objectName, ...primaryAnswers, ...engineerAnswers}
+}
+
+const internInfo = async function () {
+    const objectName = {
+        objectName : "Intern"
+    }
+    const primaryAnswers = await askPrimaryQuest(objectName.objectName);
+    const managerAnswers = await inquirer.prompt([
+        {
+        name: "school",
+        type: "input",
+        message: "Enter name of School:",
+        },
+    ]);
+    // returns two objects that been merged.
+    return {...objectName, ...primaryAnswers, ...managerAnswers}
+}
+
+
 const createAnInstance = async function (answers) {
     const objectTypes = [Manager, Engineer, Intern]
 
     let objectType = answers.objectName
+    let objectInstance;
     const primaryName = answers.name
     const primaryId = answers.id
     const primaryEmail = answers.email
     let additionalInfo;
-    
-    if (objectType === "Manager") {
-        objectType = objectTypes[0]
-        additionalInfo = answers.officeNum
+ 
+    switch (objectType) {
+        case "Manager":
+            objectInstance = objectTypes[0];
+            additionalInfo = answers.officeNum;
+            break
+        case "Engineer":
+            objectInstance = objectTypes[1];
+            additionalInfo = answers.gitHub;
+            break
+        case "Intern":
+            objectInstance = objectTypes[2]
+            additionalInfo = answers.school;
+            break
     } 
 
+    return await new objectInstance(
+            primaryName,
+            primaryId,
+            primaryEmail,
+            additionalInfo,
+        )
 
-    const managerObj = await new objectType(
-        primaryName,
-        primaryId,
-        primaryEmail,
-        additionalInfo,
-    );
 
-    console.log(managerObj);
-}
+    }
 
 
 const initiateQuestions = async function() {
-    const managersAnswers = await managerInfo()
-    createAnInstance(managersAnswers)
+    
+    const thisTeam = []
+    // const managersAnswers = await managerInfo()
+    // const anInstance = await createAnInstance(managersAnswers)
+    // const engineerAnswers = await engineerInfo()
+   // const anInstance = await createAnInstance(engineerAnswers)
+     // const internAnswers = await internInfo()
+    // createAnInstance(internAnswers)
+ 
+    // generateCard(anInstance)
+    for (let index = 0; index < 2; index++) {
+        const engineerAnswers = await engineerInfo()
+        const anInstance = await createAnInstance(engineerAnswers)
+        thisTeam.push(anInstance)   
+    }
+    return thisTeam
+
     
 }
 
-initiateQuestions()
+
+async function start() {
+    const team = await initiateQuestions()
+    console.log(team);
+}
+
+
+
+
+
+ const team = start()
+
+//  console.log(team);
+ 
+
+
+
+
+
+
 
 
 
