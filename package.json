@@ -6,6 +6,7 @@
   "name": "team-profile-generator",
   "description": "Dynamically creates a team profile in the web browser, using Node Inquiry.",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "directories": {
     "lib": "lib"
