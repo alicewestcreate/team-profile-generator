@@ -1,11 +1,7 @@
-// const Manager = require("./lib/Manager");
-// const Engineer = require("./lib/Engineer");
-// const Intern = require("./lib/Intern");
-import Engineer as Engineer from "./lib/Engineer.js";
-import { Manager } from "./lib/Manager.js";
-import { Intern } from "./lib/Intern.js";
-import inquirer from "inquirer";
-// const inquirer = require("inquirer");
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
+const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
@@ -18,6 +14,7 @@ const render = require("./src/page-template.js");
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
 const Employee = require("./lib/Employee");
+const { create } = require("domain");
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
@@ -65,8 +62,8 @@ const askPrimaryQuest = async function (employeeType) {
 
 const managerInfo = async function () {
     const manager = "manager"
-    const primaryAnswer = await askPrimaryQuest(manager);
-    var answers = await inquirer.prompt([
+    const primaryAnswers = await askPrimaryQuest(manager);
+    const managerAnswers = await inquirer.prompt([
         {
         name: "officeNum",
         type: "input",
@@ -74,18 +71,39 @@ const managerInfo = async function () {
         },
     ]);
 
-    const managerObj = new Manager(
-        primaryAnswer.name,
-        primaryAnswer.id,
-        primaryAnswer.email,
+    return {...primaryAnswers, ...managerAnswers}
+
+
+};
+
+const createObject = async function (answers) {
+    const managerObj = await new Manager(
+        answers.name,
+        answers.id,
+        answers.email,
         answers.officeNum
     );
     console.log(managerObj);
-  nextAction();
-};
+}
 
-const nextAction = function () {};
-managerInfo()
+
+const initiateQuestions = async function() {
+    const managersAnswers = await managerInfo()
+    createObject(managersAnswers)
+    console.log(managersAnswers);
+}
+
+initiateQuestions()
+
+
+
+
+
+
+
+
+
+
 // initiateQuestions();
 
 
