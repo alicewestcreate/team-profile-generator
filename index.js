@@ -1,20 +1,22 @@
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
-const inquirer = require("inquirer");
+// const Manager = require("./lib/Manager");
+// const Engineer = require("./lib/Engineer");
+// const Intern = require("./lib/Intern");
+import Engineer as Engineer from "./lib/Engineer.js";
+import { Manager } from "./lib/Manager.js";
+import { Intern } from "./lib/Intern.js";
+import inquirer from "inquirer";
+// const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-
 const render = require("./src/page-template.js");
-<<<<<<< Updated upstream
+
 
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
-=======
 const Employee = require("./lib/Employee");
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
@@ -100,4 +102,3 @@ managerInfo()
 // Add an Engineer
 // Add an Intern
 // Finish building the team
->>>>>>> Stashed changes
