@@ -1,7 +1,9 @@
-
+const thisTeam = require("../index")
+console.log("inside",thisTeam);
 
 // creates the team
 const generateTeam = team => {
+    console.log("INSIDE FUNTION");
 
     // creates the manager html
     const generateManager = manager => {
