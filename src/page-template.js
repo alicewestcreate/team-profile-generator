@@ -1,8 +1,12 @@
+
+
 // creates the team
 const generateTeam = team => {
 
     // creates the manager html
     const generateManager = manager => {
+        console.log("in function");
+        console.log(manager);
         return `
         <div class="card employee-card">
         <div class="card-header">
@@ -78,6 +82,7 @@ const generateTeam = team => {
     return html.join("");
 
 }
+
 
 // exports function to generate entire page
 module.exports = team => {

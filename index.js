@@ -1,11 +1,7 @@
-// const Manager = require("./lib/Manager");
-// const Engineer = require("./lib/Engineer");
-// const Intern = require("./lib/Intern");
-import Engineer as Engineer from "./lib/Engineer.js";
-import { Manager } from "./lib/Manager.js";
-import { Intern } from "./lib/Intern.js";
-import inquirer from "inquirer";
-// const inquirer = require("inquirer");
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
+const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
@@ -14,31 +10,8 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./src/page-template.js");
 
 
-
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
 const Employee = require("./lib/Employee");
-
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
-// const initiateQuestions = function () {
-//   inquirer
-//     .prompt([
-//       {
-//         name: "start_program",
-//         type: "confirm",
-//         message: "Press confirm to start building a team:",
-//       },
-//     ])
-//     .then((answers) => {
-//       console.log(answers);
-//       if (answers.start_program) {
-//         initiateManager();
-//       } else {
-//         console.log("false");
-//       }
-//     });
-// };
+const { create } = require("domain");
 
 const askPrimaryQuest = async function (employeeType) {
 
@@ -62,30 +35,155 @@ const askPrimaryQuest = async function (employeeType) {
     ]);
 };
 
-
 const managerInfo = async function () {
-    const manager = "manager"
-    const primaryAnswer = await askPrimaryQuest(manager);
-    var answers = await inquirer.prompt([
+    const objectName = {
+        objectName : "Manager"
+    }
+    const primaryAnswers = await askPrimaryQuest(objectName.objectName);
+    const managerAnswers = await inquirer.prompt([
         {
         name: "officeNum",
         type: "input",
         message: "Enter office number:",
         },
     ]);
+    // returns two objects that been merged.
+    return {...objectName, ...primaryAnswers, ...managerAnswers}
 
-    const managerObj = new Manager(
-        primaryAnswer.name,
-        primaryAnswer.id,
-        primaryAnswer.email,
-        answers.officeNum
-    );
-    console.log(managerObj);
-  nextAction();
 };
 
-const nextAction = function () {};
-managerInfo()
+const engineerInfo = async function () {
+    const objectName = {
+        objectName : "Engineer"
+    }
+    const primaryAnswers = await askPrimaryQuest(objectName.objectName);
+    const engineerAnswers = await inquirer.prompt([
+        {
+        name: "gitHub",
+        type: "input",
+        message: "Enter GitHub Account:",
+        },
+    ]);
+    // returns two objects that been merged.
+    return {...objectName, ...primaryAnswers, ...engineerAnswers}
+}
+
+const internInfo = async function () {
+    const objectName = {
+        objectName : "Intern"
+    }
+    const primaryAnswers = await askPrimaryQuest(objectName.objectName);
+    const managerAnswers = await inquirer.prompt([
+        {
+        name: "school",
+        type: "input",
+        message: "Enter name of School:",
+        },
+    ]);
+    // returns two objects that been merged.
+    return {...objectName, ...primaryAnswers, ...managerAnswers}
+}
+
+const createAnInstance = async function (answers) {
+    const objectTypes = [Manager, Engineer, Intern]
+    let objectType = answers.objectName
+    let objectInstance;
+    const primaryName = answers.name
+    const primaryId = answers.id
+    const primaryEmail = answers.email
+    let additionalInfo;
+ 
+    switch (objectType) {
+        case "Manager":
+            objectInstance = objectTypes[0];
+            additionalInfo = answers.officeNum;
+            break
+        case "Engineer":
+            objectInstance = objectTypes[1];
+            additionalInfo = answers.gitHub;
+            break
+        case "Intern":
+            objectInstance = objectTypes[2]
+            additionalInfo = answers.school;
+            break
+    } 
+    
+    const anInstance = await new objectInstance(
+            primaryName,
+            primaryId,
+            primaryEmail,
+            additionalInfo,
+        )
+        
+        return anInstance
+    }
+
+
+const askOptions = async function(){
+    return await inquirer.prompt([
+        {
+        name: "nextOption",
+        type: "list",
+        message: "Select next acitons: ",
+        choices: ["Add an engineer", "Add an intern", "Finish building the team",]
+        },
+    ])
+}
+
+
+const initiateQuestions = async function() {
+    const thisTeam = []
+    let anInstance;
+    const managersAnswers = await managerInfo()
+    anInstance = await createAnInstance(managersAnswers)
+    thisTeam.push(anInstance);
+
+    while (true) {
+        const choiceSelected = await askOptions()
+        switch (choiceSelected.nextOption) {
+            case "Add an engineer":
+                const engineerAnswers = await engineerInfo()
+                anInstance = await createAnInstance(engineerAnswers)
+                thisTeam.push(anInstance);
+                break
+                
+            case "Add an intern":
+                const internAnswers = await internInfo()
+                anInstance = await createAnInstance(internAnswers)
+                thisTeam.push(anInstance);
+                break
+
+            case "Finish building the team":
+                console.log(thisTeam)
+                generateTeam()
+                break
+            }
+    }
+}
+
+
+async function start() {
+    const team = await initiateQuestions()
+}
+ const team = start()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // initiateQuestions();
 
 
