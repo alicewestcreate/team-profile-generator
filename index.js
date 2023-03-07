@@ -9,34 +9,9 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./src/page-template.js");
 
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
 
 const Employee = require("./lib/Employee");
 const { create } = require("domain");
-
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
-// const initiateQuestions = function () {
-//   inquirer
-//     .prompt([
-//       {
-//         name: "start_program",
-//         type: "confirm",
-//         message: "Press confirm to start building a team:",
-//       },
-//     ])
-//     .then((answers) => {
-//       console.log(answers);
-//       if (answers.start_program) {
-//         initiateManager();
-//       } else {
-//         console.log("false");
-//       }
-//     });
-// };
-
-
-
 
 const askPrimaryQuest = async function (employeeType) {
 
@@ -109,10 +84,8 @@ const internInfo = async function () {
     return {...objectName, ...primaryAnswers, ...managerAnswers}
 }
 
-
 const createAnInstance = async function (answers) {
     const objectTypes = [Manager, Engineer, Intern]
-
     let objectType = answers.objectName
     let objectInstance;
     const primaryName = answers.name
@@ -134,53 +107,67 @@ const createAnInstance = async function (answers) {
             additionalInfo = answers.school;
             break
     } 
-
-    return await new objectInstance(
+    
+    const anInstance = await new objectInstance(
             primaryName,
             primaryId,
             primaryEmail,
             additionalInfo,
         )
-
-
+        
+        return anInstance
     }
+
+
+const askOptions = async function(){
+    return await inquirer.prompt([
+        {
+        name: "nextOption",
+        type: "list",
+        message: "Select next acitons: ",
+        choices: ["Add an engineer", "Add an intern", "Finish building the team",]
+        },
+    ])
+}
 
 
 const initiateQuestions = async function() {
-    
     const thisTeam = []
-    // const managersAnswers = await managerInfo()
-    // const anInstance = await createAnInstance(managersAnswers)
-    // const engineerAnswers = await engineerInfo()
-   // const anInstance = await createAnInstance(engineerAnswers)
-     // const internAnswers = await internInfo()
-    // createAnInstance(internAnswers)
- 
-    // generateCard(anInstance)
-    for (let index = 0; index < 2; index++) {
-        const engineerAnswers = await engineerInfo()
-        const anInstance = await createAnInstance(engineerAnswers)
-        thisTeam.push(anInstance)   
-    }
-    return thisTeam
+    let anInstance;
+    const managersAnswers = await managerInfo()
+    anInstance = await createAnInstance(managersAnswers)
+    thisTeam.push(anInstance);
 
-    
+    while (true) {
+        const choiceSelected = await askOptions()
+        switch (choiceSelected.nextOption) {
+            case "Add an engineer":
+                const engineerAnswers = await engineerInfo()
+                anInstance = await createAnInstance(engineerAnswers)
+                thisTeam.push(anInstance);
+                break
+                
+            case "Add an intern":
+                const internAnswers = await internInfo()
+                anInstance = await createAnInstance(internAnswers)
+                thisTeam.push(anInstance);
+                break
+
+            case "Finish building the team":
+                console.log(thisTeam)
+                generateTeam()
+                break
+            }
+    }
 }
 
 
 async function start() {
     const team = await initiateQuestions()
-    console.log(team);
 }
-
-
-
-
-
  const team = start()
 
-//  console.log(team);
- 
+
 
 
 
