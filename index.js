@@ -5,6 +5,7 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
+
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./src/page-template.js");
@@ -167,14 +168,20 @@ const start = async function() {
     let team;
     team = await initiateQuestions()
     console.log("team", team);
-    return team
+    let generatedHTML = render(team)
 
-   
+
+
+    fs.writeFile('index.html', generatedHTML, function (err) {
+        if (err) throw err;
+        console.log('Saved!');
+      });
+
 }
 
-team = start()
+start()
 
- module.exports = team
+//  module.exports = team
 
 
 
