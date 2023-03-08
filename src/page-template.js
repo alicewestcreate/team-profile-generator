@@ -1,33 +1,34 @@
+// Functions imported from create-cards file.
+const {
+  generateManager,
+  generateEngineer,
+  generateIntern,
+} = require("./create-cards");
 
-const {generateManager, generateEngineer, generateIntern} = require("./functions")
-
-// creates the team
-const generateTeam = team => {
-    console.log("inside",team);
-    let html = "";
-
-    team.forEach(employee => {
-        console.log(employee)
-        let role = employee.getRole()
-        switch (role) {
-            case "Manager":
-                html += generateManager(employee)
-                break;
-            case "Engineer":
-                html += generateEngineer(employee)
-                break;
-            case "Intern":
-                html += generateIntern(employee)
-                break
-        }
-    });
-
-    return html;
-
-}
+const generateTeam = (team) => {
+  // For each employee in the team, get their role and generate a card for the corrospinding role
+  // Save the returned html code as a string and += to the html variable below.
+  let html = "";
+  team.forEach((employee) => {
+    let role = employee.getRole();
+    switch (role) {
+      case "Manager":
+        html += generateManager(employee);
+        break;
+      case "Engineer":
+        html += generateEngineer(employee);
+        break;
+      case "Intern":
+        html += generateIntern(employee);
+        break;
+    }
+  });
+  return html;
+};
 
 const generateHTML = (team) => {
-    return `
+  // This function is called first and calls the generate team function below.
+  return `
     <!DOCTYPE html>
 <html lang="en">
 
@@ -60,9 +61,7 @@ const generateHTML = (team) => {
 </body>
 </html>
     `;
+};
 
-}
-
-
-// exports function to generate entire page
-module.exports = generateHTML
+// exports the function that has all the html in to generate the page.
+module.exports = generateHTML;
