@@ -1,7 +1,5 @@
 // creates the manager html
 const generateManager = manager => {
-    console.log("in function");
-    console.log(manager);
     return `
     <div class="card employee-card">
     <div class="card-header">
@@ -57,4 +55,6 @@ const generateIntern = intern => {
     `;
 };
 
+
+// exports all functions individually.
 module.exports = {generateManager, generateEngineer, generateIntern}
